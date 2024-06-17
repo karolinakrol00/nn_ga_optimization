@@ -10,4 +10,4 @@ def ReLU(x):
     return np.maximum(x, 0)
 
 def softmax(x):
-    return np.exp(x) / np.sum(np.exp(x), axis=0)
+    return(np.exp(x)/np.exp(x).sum())

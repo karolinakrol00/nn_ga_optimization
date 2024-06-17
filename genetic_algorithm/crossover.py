@@ -55,7 +55,6 @@ def choose_gene(genotype_1, genotype_2):
 
 def uniform_crossover(mating_pool, crossover_percentage = 0.8): 
 
-    n_genes = len(mating_pool[0].genotype)
     mating_pool_size = len(mating_pool)
     mating_number = 2 * round(mating_pool_size * crossover_percentage)
 
@@ -63,8 +62,9 @@ def uniform_crossover(mating_pool, crossover_percentage = 0.8):
 
     for _ in range(mating_number):
 
-        parents_ind = np.random.choice(n_genes, 2, replace = False)
-        parent_1, parent_2 = mating_pool[parents_ind]
+        parents_ind = np.random.choice(mating_pool_size, 2, replace = False)
+        parent_1 = mating_pool[parents_ind[0]]
+        parent_2 = mating_pool[parents_ind[1]]
 
         child = choose_gene(parent_1.genotype, parent_2.genotype)
         children.append(child)

@@ -76,7 +76,7 @@ def random_weight_mutation(individual, mutation_prob):
     prob = np.random.uniform()
     
     if prob < mutation_prob:
-        pos = np.random.randint(0, n_genes, 1)
+        pos = np.random.randint(0, n_genes, 1)[0]
         individual.genotype[pos] = np.random.normal()
         individual.fitness = None
 
