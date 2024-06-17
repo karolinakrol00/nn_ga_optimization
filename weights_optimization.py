@@ -1,11 +1,24 @@
 import numpy as np
 from neural_network import Network, FCLayer
 from genetic_algorithm import Population, k_point_crossover, swap_weight_mutation
+from typing import Any, List
 
-def fit_ga(network, n_individuals, x_train, y_train, n_generations, mutation_probability):
+def fit_ga(network: Network, x_train: np.ndarray[Any, np.dtype[float]], y_train: np.ndarray[Any, np.dtype[float]], 
+           n_generations: int, n_individuals: int, mutation_probability: float) -> List[float] :
 
-    """Optimize neural network weights and biases using genetic algorithm."""
+    """
+    Optimizes neural network weights and biases using a genetic algorithm.
 
+    Parameters:
+    - network: Blueprint of network architecture
+    - x_train, y_train: Training data and labels
+    - n_generations: Number of generations for the genetic algorithm
+    - n_individuals: Size of the population for the genetic algorithm
+    - mutation_probability: Probability of mutation of single individual
+
+    Returns:
+    - List of eroors produced over generations
+    """
     def assign_weights_and_biases(nn_individual, genotype):
 
             """Assign weights and biases to the neural network based on the genotype."""
@@ -61,7 +74,7 @@ def fit_ga(network, n_individuals, x_train, y_train, n_generations, mutation_pro
         errors_over_epochs.append(min_error)
 
         # Perform crossover and mutation
-        population.crossover(k_point_crossover, 0.6, 1)
+        population.crossover(k_point_crossover, 0.6, 2)
         population.mutation(swap_weight_mutation, mutation_probability)
 
     for individual in population.individuals:

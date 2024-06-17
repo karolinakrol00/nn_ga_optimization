@@ -6,9 +6,10 @@ from sklearn.exceptions import ConvergenceWarning
 from genetic_algorithm import Population, k_point_crossover, random_mutation, add_topology_element, add_neurons, remove_neurons, remove_topology_element
 
 warnings.filterwarnings(action = 'ignore', category = ConvergenceWarning)
+rs = np.random.randint(1)
 
-def optimize_hyperparameters_by_ga(X_train: np.ndarray[Any, np.dtype[np.float32]], X_test: np.ndarray[Any, np.dtype[np.float32]],
-                                   y_train: np.ndarray[Any, np.dtype[np.float32]], y_test: np.ndarray[Any, np.dtype[np.float32]],
+def optimize_hyperparameters_by_ga(X_train: np.ndarray[Any, np.dtype[float]], X_test: np.ndarray[Any, np.dtype[float]],
+                                   y_train: np.ndarray[Any, np.dtype[float]], y_test: np.ndarray[Any, np.dtype[float]],
                                    hyperparameters_to_optimize: Dict[str, int], 
                                    population_size: int,
                                    n_generations: int) -> Dict[str, int]:
@@ -22,9 +23,11 @@ def optimize_hyperparameters_by_ga(X_train: np.ndarray[Any, np.dtype[np.float32]
     - hyperparameters_to_optimize: Dictionary of hyperparameters to optimize
     - population_size: Size of the population for the genetic algorithm
     - n_generations: Number of generations for the genetic algorithm
+
     Returns:
-    - Dictionary of optimized hyperparameters
+    - Dictionary of optimized hyperparameters and predictions of the best individual in the last generation
     """
+    
     acc_over_generations = []
     # Initialize population with random individuals
     population = Population(population_size, hyperparameters_to_optimize)
@@ -58,7 +61,7 @@ def optimize_hyperparameters_by_ga(X_train: np.ndarray[Any, np.dtype[np.float32]
                 prepare_params(params_dict)
 
                 # Train MLPClassifier and evaluate its performance
-                clf = MLPClassifier(**params_dict, random_state=78).fit(X_train, y_train)
+                clf = MLPClassifier(**params_dict, random_state=rs).fit(X_train, y_train)
                 individual.fitness = clf.score(X_test, y_test)
 
     max_fitness = 0
@@ -68,7 +71,7 @@ def optimize_hyperparameters_by_ga(X_train: np.ndarray[Any, np.dtype[np.float32]
     while generation < n_generations + 1:
 
         # Perform crossover and evaluate individuals
-        population.crossover(k_point_crossover, 2)
+        population.crossover(k_point_crossover, 0.8, 1)
         build_nn_and_evaluate()
 
         i = 0
@@ -94,7 +97,7 @@ def optimize_hyperparameters_by_ga(X_train: np.ndarray[Any, np.dtype[np.float32]
 
     params_dict = dict(zip(params_names, fittest_genotype))
     prepare_params(params_dict)
-    clf = MLPClassifier(**params_dict, random_state=78).fit(X_train, y_train)
+    clf = MLPClassifier(**params_dict, random_state=rs).fit(X_train, y_train)
     predicted = clf.predict(X_test)
     predicted_proba = clf.predict_proba(X_test)
 
